@@ -26,6 +26,8 @@ def param(**kwargs):
         signature = caller_signatures[arg]
         annotation = signature.annotation
         value = values[arg]
+        if value == None:
+            continue
         if annotation == inspect._empty:
             default = signature.default
             if default != inspect._empty:
