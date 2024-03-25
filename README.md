@@ -1,5 +1,5 @@
 # param-helper
-A python library that can easily get parameters from a function, as well as additional features
+A python library that provides an esay way to get parameters in a function, with additional features
 
 ## usage & example
 [code](test.py)  
