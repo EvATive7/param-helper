@@ -6,11 +6,13 @@ def test_func(phone: str, password: str, action: list[str], channel=0):
     origin_vars = locals().copy()
     param_vars = param(type=1)  # Additional parameters
 
-    print(f"""{origin_vars}
+    print(
+f"""
+{origin_vars}
 ->
 {param_vars}
-
-""")
+"""
+)
 
     # You can view vars in debugging
     ...
