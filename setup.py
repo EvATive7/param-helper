@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="param-helper",
-    version="1.1",
+    version="1.1.1",
     author="EvATive7",
     author_email="",
     long_description=long_description,
