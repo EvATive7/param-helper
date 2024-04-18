@@ -32,7 +32,10 @@ def param(**kwargs):
             default = signature.default
             if default != inspect._empty:
                 default = type(default)
-                previous_function_args[arg] = default(value)
+                if default != type(None):
+                    previous_function_args[arg] = default(value)
+                else:
+                    previous_function_args[arg] = value
             else:
                 previous_function_args[arg] = value
         else:
