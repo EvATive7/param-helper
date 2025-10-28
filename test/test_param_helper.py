@@ -32,6 +32,15 @@ def mod_foo_multi(a, tags):
     return ph.param(prmhlpr_multi_key_mode_=True)
 
 
+def mod_foo_multi_selective(a, tags, labels):
+    # Only expand for 'tags' key
+    return ph.param(prmhlpr_multi_key_mode_=["tags"])
+
+
+def mod_foo_multi_false(a, tags):
+    return ph.param(prmhlpr_multi_key_mode_=False)
+
+
 def test_function_basic_no_annotations():
     out = mod_foo_basic(1, "x")
     assert out == {"a": 1, "b": "x"}
@@ -69,3 +78,21 @@ def test_multi_key_mode_list_and_tuple_expand():
 
     out2 = mod_foo_multi(2, tags=("m", "n"))
     assert sorted(out2) == sorted([("a", 2), ("tags", "m"), ("tags", "n")])
+
+
+def test_multi_key_mode_selective_expand_only_targets_keys():
+    out = mod_foo_multi_selective(1, tags=["x", "y"], labels=[1, 2])
+    # Only 'tags' is expanded; 'labels' remains as a list value
+    assert sorted(out) == sorted(
+        [
+            ("a", 1),
+            ("tags", "x"),
+            ("tags", "y"),
+            ("labels", [1, 2]),
+        ]
+    )
+
+
+def test_multi_key_mode_false_no_expand():
+    out = mod_foo_multi_false(5, tags=["x", "y"])
+    assert out == {"a": 5, "tags": ["x", "y"]}

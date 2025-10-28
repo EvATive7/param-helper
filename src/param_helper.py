@@ -1,7 +1,20 @@
 import inspect
 
 
-def param(prmhlpr_multi_key_mode_: bool = False, **kwargs):
+def param(prmhlpr_multi_key_mode_: bool | list[str] = False, **kwargs):
+    """Collect caller's parameters with optional multi-key expansion.
+
+    Parameters
+    - `prmhlpr_multi_key_mode_` (bool | list[str]):
+      - True: expand all list/tuple values into multiple `(key, item)` pairs.
+      - list[str]: only expand list/tuple values for the specified keys.
+      - False (default): no expansion; return a dict of parameters.
+    - `**kwargs`: explicit overrides or additional parameters merged into the result.
+
+    Returns
+    - If `prmhlpr_multi_key_mode_` is False: `dict[str, Any]` of parameters.
+    - Otherwise: `list[tuple[str, Any]]` where list/tuple values may be expanded.
+    """
     # Get the caller's frame and function name
     caller_frame = inspect.currentframe().f_back
     caller_name = caller_frame.f_code.co_name
@@ -56,12 +69,18 @@ def param(prmhlpr_multi_key_mode_: bool = False, **kwargs):
     # Merge with any explicitly passed keyword arguments
     previous_function_args.update(kwargs)
 
-    # Added logic for __ph_multi_key_mode
     if prmhlpr_multi_key_mode_:
         result = []
+        # Determine selective keys when a list of keys is passed
+        selective_keys: set[str] | None = None
+        if isinstance(prmhlpr_multi_key_mode_, (list, tuple, set)):
+            selective_keys = set(map(str, prmhlpr_multi_key_mode_))
+
         for key, val in previous_function_args.items():
-            # If the value is a list or tuple, expand into multiple (key, value) pairs
-            if isinstance(val, (list, tuple)):
+            should_expand = isinstance(val, (list, tuple)) and (
+                selective_keys is None or key in selective_keys
+            )
+            if should_expand:
                 result.extend((key, item) for item in val)
             else:
                 result.append((key, val))
